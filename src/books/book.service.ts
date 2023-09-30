@@ -155,6 +155,18 @@ export class BookService {
     },
   ];
 
+  private authorsSet = new Set<string>();
+  private genresSet = new Set<string>();
+  private languagesSet = new Set<string>();
+
+  constructor() {
+    this.books.forEach((book) => {
+      this.authorsSet.add(book.author);
+      this.genresSet.add(book.genre);
+      this.languagesSet.add(book.language);
+    });
+  }
+
   getBooks(): Book[] {
     return this.books;
   }
@@ -177,36 +189,35 @@ export class BookService {
   }
 
   getAuthors(): string[] {
-    this.authors = this.getUniqueValues('author');
-    return this.authors;
+    return Array.from(this.authorsSet);
   }
 
   getGenres(): string[] {
-    return this.books.map((book) => book.genre);
+    return Array.from(this.genresSet);
   }
 
   getLanguages(): string[] {
-    return this.books.map((book) => book.language);
+    return Array.from(this.languagesSet);
   }
 
   getBookById(id: string): Book | undefined {
     return this.books.find((book) => book.id === id);
   }
 
-  updateBook(id: string, updatedBook: Book): void {
+  updateBook(id: string, updatedBook: Book): Book {
     const index = this.books.findIndex((book) => book.id === id);
     if (index !== -1) {
       this.books[index] = { ...this.books[index], ...updatedBook };
       this.authors = this.getUniqueValues('author');
       this.genres = this.getUniqueValues('genre');
       this.languages = this.getUniqueValues('language');
+      return this.books[index];
     }
   }
 
   addBook(newBook: Book): void {
     this.books.push(newBook);
     this.authors = this.getUniqueValues('author');
-    console.log(this.authors);
     this.genres = this.getUniqueValues('genre');
     this.languages = this.getUniqueValues('language');
   }

@@ -1,10 +1,15 @@
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { BookService } from './book.service';
 import { Book } from './book.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
+
+  generateUniqueId(): string {
+    return uuidv4();
+  }
 
   @Get()
   getBooks() {
@@ -43,11 +48,13 @@ export class BookController {
 
   @Put('authors')
   updateAuthors(@Body() authors: string[]) {
+    console.log('red');
     return this.bookService.updateAuthors(authors);
   }
 
   @Post()
   addBook(@Body() book: Book) {
+    book.id = this.generateUniqueId();
     this.bookService.addBook(book);
   }
 
